@@ -1,0 +1,12 @@
+.bg-gif{
+    background-image: url('../../../public/BSRz.gif');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+
+.bg-loading{
+    background-image: url('../../../public/loading.gif');
+    background-size: auto;
+    background-repeat: no-repeat;
+}
