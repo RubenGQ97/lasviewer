@@ -4,10 +4,10 @@ import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js';
 import './styles/canvas.css'
 import { toRgb, classificationToColor } from './utils.jsx'
 let scene, camera, renderer, controls, points
+const scaleFactor = 0.01;
 
 function Canvas(props) {
   const ref = useRef(null)
-  const [colorType, setColorType] = useState()
   const [firstState, setFirstState] = useState(true)
   const [color, setColor] = useState(null)
   const [classificationColor, setClassificationColor] = useState()
@@ -17,59 +17,78 @@ function Canvas(props) {
   let material;
   const geometry = new THREE.BufferGeometry()
 
-  //evento se lee archivo desde la dropzone
+
+  /**
+   * evento se lee archivo desde la dropzone
+   */
   const handleNewFile = (event) => {
-    props.readDataFromFile(event.target.files[0],false)
+    props.readDataFromFile(event.target.files[0], false)
   }
 
+  /**
+   * Guarda el estado de classificacion y crea 
+   * un array con valores RGB según la clasificacion de cada punto
+   */
+  const initClassification = (value) => {
+    setClassification(value)
+    setClassificationColor(classificationToColor(value))
+  }
+
+
+  /*
+    Crea el material de los puntos según el tipo de colorizacion fijado
+  */
   const createMaterial = () => {
-    switch (props.colorType) {
-      case 'RGB':
-        material = new THREE.PointsMaterial({ size: 0.05, vertexColors: true });
-        geometry.setAttribute('color', new THREE.BufferAttribute(color, 3, true))
-        break;
-      case 'CLASSIFICATION':
-        material = new THREE.PointsMaterial({ size: 0.05, vertexColors: true });
-        geometry.setAttribute('color', new THREE.BufferAttribute(classificationColor, 3, true))
-        break;
-      default:
-        material = new THREE.PointsMaterial({ size: 0., color: 'blue' })
-        break;
-
-    }
-
-    if (color != null) {
-
+    if (color == null) {
+      material = new THREE.PointsMaterial({ size: 0.1, color: 'grey' })
     } else {
-      material = new THREE.PointsMaterial({ size: 0., color: 'blue' })
+      material = new THREE.PointsMaterial({ size: 0.08, vertexColors: true });
+      switch (props.colorType) {
+        case 'RGB':
+          geometry.setAttribute('color', new THREE.BufferAttribute(color, 3, true))
+          break;
+        case 'CLASSIFICATION':
+          geometry.setAttribute('color', new THREE.BufferAttribute(classificationColor, 3, true))
+          break;
+        default:
+          material = new THREE.PointsMaterial({ size: 0.1, color: 'grey' })
+          break;
+
+      }
     }
+    geometry.setAttribute('position', new THREE.BufferAttribute(position, 3))
   }
 
-  const initScene = () => {
+  /**
+   * crea la escena de threeJS
+   */
+  const createScene = () => {
     scene = new THREE.Scene()
     scene.background = new THREE.Color(0x000000)
+  }
 
-    //configuraremos la posicion si props.data cambia 
+  /**
+   * crea la camara de threeJS
+   */
+  const createCamera = () => {
     camera = new THREE.PerspectiveCamera();
+  }
 
 
+  /**
+   * crea los controles de camara
+   */
+  const createControls = () => {
     controls = new FlyControls(camera, ref.current)
     controls.movementSpeed = props.speed;
     controls.rollSpeed = 0.01;
-
-    //puntos de la nube
-    geometry.setAttribute('position', new THREE.BufferAttribute(position, 3))
+  }
 
 
-    createMaterial()
-
-    points = new THREE.Points(geometry, material);
-
-    //Escalamos
-    const scaleFactor = 0.01;
-    points.scale.set(scaleFactor, scaleFactor, scaleFactor);
-
-    //Ajustamos camara tras escalar
+  /**
+   * Resetea la posicion de la camara
+   */
+  const resetCamera = () => {
     const vista = new THREE.Box3().setFromObject(points);
     const center = vista.getCenter(new THREE.Vector3());
     const size = vista.getSize(new THREE.Vector3());
@@ -78,8 +97,25 @@ function Canvas(props) {
     camera.position.copy(center);
     camera.position.z += distance;
     camera.lookAt(center);
+  }
 
 
+
+  const initScene = () => {
+    createScene()
+    createCamera()
+    createControls()
+    createMaterial()
+
+    points = new THREE.Points(geometry, material);
+
+    //Escalamos
+    points.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+    //Ajustamos camara tras escalar
+    resetCamera()
+
+    console.log(points)
     scene.add(points)
   }
 
@@ -100,10 +136,20 @@ function Canvas(props) {
 
 
 
-  const initClassification = (value) => {
-    setClassification(value)
-    setClassificationColor(classificationToColor(value))
+
+
+  /**
+   * Crea de nuevo los puntos cuando el tipo de color cambia o el tamaño de los puntos cambia
+   */
+  const updatePoints = () => {
+    createMaterial();
+    const newPoints = new THREE.Points(geometry, material);
+    newPoints.scale.set(scaleFactor, scaleFactor, scaleFactor);
+    scene.remove(points);
+    scene.add(newPoints);
+    points = newPoints;
   }
+
 
   //inicial
   useEffect(() => {
@@ -112,11 +158,11 @@ function Canvas(props) {
 
 
 
-  //si se cargan datos actualizamos las variables del componente
+  /**
+   * UseEffect para que si se cargan datos actualizar las variables del componente
+   */
   useEffect(() => {
-    console.log("effect datos")
     if (!firstState) {
-      console.log(props.data)
       props.data.attributes?.COLOR_0 ? setColor(toRgb(props.data.attributes.COLOR_0.value)) : null
       props.data.attributes?.POSITION ? setPosition(props.data.attributes.POSITION.value) : null
       props.data.attributes?.classification ? initClassification(props.data.attributes.classification.value) : null
@@ -126,7 +172,9 @@ function Canvas(props) {
 
 
 
-  //si cambia algun valor de los datos o el tipo de color
+  /**
+   * Si la variable position se inicia, se monta la escena 
+   */
   useEffect(() => {
     console.log("effect datos 2")
     if (!firstState) {
@@ -136,32 +184,16 @@ function Canvas(props) {
 
   }, [position])
 
+
+
   //si cambia el tipo de color
   useEffect(() => {
-    console.log("effect color")
+
     if (!firstState) {
-      initScene()
-      startRenderingLoop()
+      updatePoints()
     }
 
   }, [props.colorType])
-
-
-  //desactivar controles (test)
-  const handleKeyPress = (event) => {
-    if (event.key === 'p') {
-      controls = null
-    }
-  };
-
-  //para manejar eventos de teclados
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyPress);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyPress);
-    };
-  }, [controls, handleKeyPress]);
 
 
 
@@ -182,7 +214,7 @@ function Canvas(props) {
       event.preventDefault();
       const files = event.dataTransfer.files;
       if (files.length > 0) {
-        props.readDataFromFile(files[0],false);
+        props.readDataFromFile(files[0], false);
       }
     };
 

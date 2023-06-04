@@ -31,14 +31,16 @@ function Header(props) {
 
   return (
     <div className='relative'>
-      <div className={" flex items-center py-3 h-30 bg-blue-500"} >
+      <div className={" flex items-center py-3 h-30 bg-blue-900"} >
         <input type="file" className=" hidden" id="file-upload" onChange={handleNewFile}></input>
         <label
-          className="cursor-pointer bg-white border border-gray-300 text-black-700 ml-3 py-2 px-4 rounded-lg shadow-sm  hover:bg-gray-100">
+          className="cursor-pointer bg-white border border-gray-300 text-black-700 ml-3 py-2 px-4 rounded-l-lg shadow-sm  hover:bg-gray-100"
+          htmlFor="file-upload"
+          >
           Seleccionar archivo
         </label>
         <button
-          className=" ml-0 flex items-center cursor-pointer bg-white border border-gray-300 text-black-700 h-full px-1 py-3 rounded-lg shadow-sm hover:bg-gray-100"
+          className=" ml-0 flex items-center cursor-pointer bg-white border border-gray-300 text-black-700 h-full px-1 py-3 rounded-r-lg shadow-sm hover:bg-gray-100"
           onClick={() => setDropdown(!dropdown)}
         >
           <FontAwesomeIcon icon={faAngleDown} className="mx-auto " />
@@ -52,7 +54,7 @@ function Header(props) {
               {EXAMPLES_FILES.map((file, index) => (
 
                 <li key={index}
-                  className="cursor-pointer text-black font-mono hover:text-blue-700 border-b border-gray-300"
+                  className="cursor-pointer text-black font-mono m-0 p-0 hover:text-blue-700 border-b border-gray-300"
                   onClick={() => handleExampleFile(file.path)}
                 >
                   {file.name}

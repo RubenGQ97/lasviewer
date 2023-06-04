@@ -10,7 +10,7 @@ export default function ColorSection(props) {
     };
 
     return (
-        <div className="bg-blue-900 p-2 mb-4 h-15">
+        <div className="bg-blue-900 py-10 p-2 mb-4 h-15">
             <select
                 className="bg-white text-blue-900 px-4 py-2 rounded-full w-auto"
                 value={selectedOption}
