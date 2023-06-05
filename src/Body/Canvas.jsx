@@ -40,9 +40,9 @@ function Canvas(props) {
   */
   const createMaterial = () => {
     if (color == null) {
-      material = new THREE.PointsMaterial({ size: 0.1, color: 'grey' })
+      material = new THREE.PointsMaterial({ size: props.pointSize, color: 'grey' })
     } else {
-      material = new THREE.PointsMaterial({ size: 0.08, vertexColors: true });
+      material = new THREE.PointsMaterial({ size: props.pointSize, vertexColors: true });
       switch (props.colorType) {
         case 'RGB':
           geometry.setAttribute('color', new THREE.BufferAttribute(color, 3, true))
@@ -51,7 +51,7 @@ function Canvas(props) {
           geometry.setAttribute('color', new THREE.BufferAttribute(classificationColor, 3, true))
           break;
         default:
-          material = new THREE.PointsMaterial({ size: 0.1, color: 'grey' })
+          material = new THREE.PointsMaterial({ size: props.pointSize, color: 'grey' })
           break;
 
       }
@@ -176,7 +176,6 @@ function Canvas(props) {
    * Si la variable position se inicia, se monta la escena 
    */
   useEffect(() => {
-    console.log("effect datos 2")
     if (!firstState) {
       initScene()
       startRenderingLoop()
@@ -186,22 +185,41 @@ function Canvas(props) {
 
 
 
-  //si cambia el tipo de color
+  //si cambia el tipo de color o el tamaño de los puntos
   useEffect(() => {
 
-    if (!firstState) {
+    if (!firstState && scene) {
       updatePoints()
     }
 
-  }, [props.colorType])
+  }, [props.colorType, props.pointSize])
 
 
+
+  //resetea la posicion de la camara
+  useEffect(() => {
+    if (!firstState) {
+      setTimeout( function() {
+		
+        var dataURL = renderer.domElement.toDataURL();
+        
+        var link = document.createElement("a");
+        link.download = "demo.png";
+        link.href = dataURL;
+        link.target = "_blank";
+        link.click();
+      
+      }, 1000 );
+      resetCamera()
+      props.setResetCamera(false)
+    }
+  }, [props.resetCamera])
 
 
   const returnCanvas = () => {
     return (
-      <div className="h-full flex justify-center items-center col-span-6 bg-black">
-        <canvas ref={ref} className="w-full h-full" ></canvas>
+      <div className="h-[100vh] flex justify-center items-center col-span-6 bg-black">
+        <canvas ref={ref} id="canvas" className="w-full h-full" ></canvas>
       </div>
     )
   }

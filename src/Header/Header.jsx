@@ -3,7 +3,8 @@ import { useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
-
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 const EXAMPLES_FILES = [
   { name: 'half-dome', path: '/half-dome.laz' },
@@ -26,7 +27,18 @@ function Header(props) {
 
   }
 
-
+  const exportPng = () => {
+    const canvas = document.getElementById('canvas'); // Reemplaza 'canvas' con el ID de tu elemento de canvas
+    console.log(canvas)
+    html2canvas(canvas)
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = 'captura.png';
+        link.click();
+      });
+  }
 
 
   return (
@@ -36,7 +48,7 @@ function Header(props) {
         <label
           className="cursor-pointer bg-white border border-gray-300 text-black-700 ml-3 py-2 px-4 rounded-l-lg shadow-sm  hover:bg-gray-100"
           htmlFor="file-upload"
-          >
+        >
           Seleccionar archivo
         </label>
         <button
@@ -64,7 +76,16 @@ function Header(props) {
             </ul>
           </div>
         )}
-
+        <button className='flex ml-auto items-center cursor-pointer bg-white border border-gray-300 text-black-700 h-full  mx-6 px-6 py-2 rounded-lg shadow-sm hover:bg-gray-100'
+          onClick={ exportPng}
+        >
+          Exportar screenshot
+        </button>
+        <button className='flex ml-auto items-center cursor-pointer bg-white border border-gray-300 text-black-700 h-full  mx-6 px-6 py-2 rounded-lg shadow-sm hover:bg-gray-100'
+          onClick={props.reset}
+        >
+          Reset
+        </button>
       </div>
     </div>
 
