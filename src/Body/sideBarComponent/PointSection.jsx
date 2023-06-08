@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 
 export function PointSection(props) {
     const [customSize, setCustomSize] = useState()
-    let timeout
 
 
     const handleSizeChange = (value) => {
@@ -23,29 +22,16 @@ export function PointSection(props) {
     return (
         <div className="bg-blue-900 py-10 p-2 mb-4 h-15">
             <div className="btn-group text-center">
-                <button className={buttonStyle(0.05)} onClick={() => handleSizeChange(0.05)}>
+                <button className={buttonStyle(0.05)} onClick={() => handleSizeChange(0.00001)}>
                     Pequeño
                 </button>
-                <button className={buttonStyle(0.2)} onClick={() => handleSizeChange(0.2)}>
+                <button className={buttonStyle(0.2)} onClick={() => handleSizeChange(0.01)}>
                     Medio
                 </button>
-                <button className={buttonStyle(1)} onClick={() => handleSizeChange(1)}>
+                <button className={buttonStyle(1)} onClick={() => handleSizeChange(0.1)}>
                     Grande
                 </button>
-                <div className="form-group">
-                    <input
-                        type="number"
-                        step={0.01}
-                        min={0.01}
-                        max={1.5}
-                        value={customSize}
-                        onChange={handleCustomSizeChange}
-                        className="form-control"
-                    />
-                    <button className={buttonStyle(customSize)} onClick={() => handleSizeChange(customSize)}>
-                        Personalizado
-                    </button>
-                </div>
+
             </div>
         </div>
     )

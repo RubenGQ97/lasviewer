@@ -16,6 +16,7 @@ const EXAMPLES_FILES = [
 
 function Header(props) {
   const [dropdown, setDropdown] = useState(false);
+  const [stateControl, setStateControl] = useState(false)
 
   const handleNewFile = (event) => {
     props.readDataFromFile(event.target.files[0], false)
@@ -29,7 +30,6 @@ function Header(props) {
 
   const exportPng = () => {
     const canvas = document.getElementById('canvas'); // Reemplaza 'canvas' con el ID de tu elemento de canvas
-    console.log(canvas)
     html2canvas(canvas)
       .then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
@@ -40,6 +40,11 @@ function Header(props) {
       });
   }
 
+
+  const toggleControlState = () => {
+    props.setUseFlyControls()
+    setStateControl(!stateControl);
+  };
 
   return (
     <div className='relative'>
@@ -77,9 +82,15 @@ function Header(props) {
           </div>
         )}
         <button className='flex ml-auto items-center cursor-pointer bg-white border border-gray-300 text-black-700 h-full  mx-6 px-6 py-2 rounded-lg shadow-sm hover:bg-gray-100'
-          onClick={ exportPng}
+          onClick={exportPng}
         >
           Exportar screenshot
+        </button>
+        <button
+          className={`flex ml-auto items-center cursor-pointer bg-white border border-gray-300 text-black-700 h-full  mx-6 px-6 py-2 rounded-lg shadow-sm hover:bg-gray-100 ${stateControl ? 'bg-blue-500' : 'bg-gray-300'}`}
+          onClick={toggleControlState}
+        >
+          {stateControl ? 'Fly Controls' : 'Orbit Controls'}
         </button>
         <button className='flex ml-auto items-center cursor-pointer bg-white border border-gray-300 text-black-700 h-full  mx-6 px-6 py-2 rounded-lg shadow-sm hover:bg-gray-100'
           onClick={props.reset}

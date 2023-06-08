@@ -1,10 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
 import * as THREE from 'three';
 import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
 import './styles/canvas.css'
 import { toRgb, classificationToColor } from './utils.jsx'
-let scene, camera, renderer, controls, points
-const scaleFactor = 0.01;
+let scene, camera, renderer, controls, points, flyControls
+const scaleFactor = 0.001;
 
 function Canvas(props) {
   const ref = useRef(null)
@@ -31,7 +33,8 @@ function Canvas(props) {
    */
   const initClassification = (value) => {
     setClassification(value)
-    setClassificationColor(classificationToColor(value))
+    console.log("EN CANVAS", props.classificationMap)
+    setClassificationColor(classificationToColor(value, props.classificationMap))
   }
 
 
@@ -79,9 +82,22 @@ function Canvas(props) {
    * crea los controles de camara
    */
   const createControls = () => {
-    controls = new FlyControls(camera, ref.current)
-    controls.movementSpeed = props.speed;
-    controls.rollSpeed = 0.01;
+    if (!props.useFlyControls) {
+      console.log("crea orbit")
+      controls = new OrbitControls(camera, ref.current);
+      controls.enableZoom = true; // Habilitar zoom
+      controls.enableRotate = true; // Habilitar rotación
+      controls.enablePan = true;
+      controls.zoomSpeed = 1;
+      controls.update();
+    } else {
+      console.log("crea fly")
+      flyControls = new FlyControls(camera, ref.current);
+      flyControls.movementSpeed = 1;
+      flyControls.rollSpeed = Math.PI / 24;
+      flyControls.autoForward = false;
+      flyControls.dragToLook = true;
+    }
   }
 
 
@@ -97,6 +113,7 @@ function Canvas(props) {
     camera.position.copy(center);
     camera.position.z += distance;
     camera.lookAt(center);
+    if(controls)controls.target.copy(center)
   }
 
 
@@ -127,7 +144,11 @@ function Canvas(props) {
     renderer.setSize(ref.current.clientWidth, ref.current.clientHeight);
     const render = () => {
       requestAnimationFrame(render);
-      controls.update(1);
+      console.log("loop",controls)
+      console.log("loop2",flyControls,props.useFlyControls)
+      if(controls)controls.update();
+      if(flyControls)flyControls.update(1)
+
       renderer.render(scene, camera);
     };
 
@@ -184,6 +205,31 @@ function Canvas(props) {
   }, [position])
 
 
+  useEffect(() => {
+    if (!firstState && scene) {
+      initClassification(classification)
+      updatePoints()
+    }
+  }, [props.classificationMap]);
+
+
+
+  useEffect(() => {
+    if (!firstState && scene) {
+      console.log("PO SIIIIIIIIIIIII")
+      if (controls) {
+        controls.dispose();
+      }
+
+      if (flyControls) {
+        flyControls.dispose();
+      }
+      console.log("crea controles otra vez")
+      createControls();
+    }
+
+  }, [props.useFlyControls])
+
 
   //si cambia el tipo de color o el tamaño de los puntos
   useEffect(() => {
@@ -199,17 +245,6 @@ function Canvas(props) {
   //resetea la posicion de la camara
   useEffect(() => {
     if (!firstState) {
-      setTimeout( function() {
-		
-        var dataURL = renderer.domElement.toDataURL();
-        
-        var link = document.createElement("a");
-        link.download = "demo.png";
-        link.href = dataURL;
-        link.target = "_blank";
-        link.click();
-      
-      }, 1000 );
       resetCamera()
       props.setResetCamera(false)
     }
@@ -239,8 +274,8 @@ function Canvas(props) {
     if (props.loading) {
       return (
         <div className="h-full flex justify-center items-center col-span-6 bg-gif">
-          <label htmlFor="dropzone-file" className=" m-10 flex flex-col items-center justify-center w-2/6 h-3/6 border-2 bg-loading">
-
+          <label className=" m-10 flex flex-col items-center justify-center ">
+          <img src="/giphy.gif" alt="Loading" />
           </label>
         </div>
       )

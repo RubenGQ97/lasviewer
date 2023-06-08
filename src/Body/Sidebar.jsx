@@ -13,10 +13,13 @@ function SideBar(props) {
       <div className="p-4">
         <Information datos={props.datos} fileName={props.fileName}></Information>
         <h2 className="text-2xl font-sans bg-teal-300 mb-4"> Color</h2>
-          <ColorSection changeColorType={props.changeColorType} ></ColorSection>
+          <ColorSection 
+          changeColorType={props.changeColorType} 
+          updateClassificationMap={props.updateClassificationMap}
+          classificationNumber={props.classificationNumber}
+          classificationMap={props.classificationMap}
+          ></ColorSection>
         <h2 className="text-2xl font-sans bg-teal-300 mb-4"> Puntos</h2>
-          <PointSection pointSize={props.pointSize} handleChangePointSize={props.handleChangePointSize} ></PointSection>
-          <PointSection pointSize={props.pointSize} handleChangePointSize={props.handleChangePointSize} ></PointSection>
           <PointSection pointSize={props.pointSize} handleChangePointSize={props.handleChangePointSize} ></PointSection>
       </div>
   </div>;

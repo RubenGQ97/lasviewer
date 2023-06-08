@@ -53,17 +53,19 @@ const toRgb=(arrayColor)=>{
     return rgb
   }
 
-  const classificationToColor=(arrayClassification)=>{
+  const classificationToColor=(arrayClassification,map)=>{
     let color = [];
     arrayClassification.forEach(clasificacion => {
       if(clasificacion>17 || clasificacion<0){
         color.push.apply(color,[255,255,255])
       }else{
-        color.push.apply(color,CLASSIFICATION_MAP.get(clasificacion))
+        color.push.apply(color,map.get(clasificacion))
       }
     });
     return Uint8Array.from(color)
   }
 
 
-export {toRgb,classificationToColor}
+
+
+export {toRgb,classificationToColor,CLASSIFICATION_MAP}
