@@ -3,8 +3,7 @@ import { useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+
 
 const EXAMPLES_FILES = [
   { name: 'half-dome', path: '/half-dome.laz' },
@@ -27,19 +26,6 @@ function Header(props) {
     props.readDataFromFile(url, true)
 
   }
-
-  const exportPng = () => {
-    const canvas = document.getElementById('canvas'); // Reemplaza 'canvas' con el ID de tu elemento de canvas
-    html2canvas(canvas)
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.href = imgData;
-        link.download = 'captura.png';
-        link.click();
-      });
-  }
-
 
   const toggleControlState = () => {
     props.setUseFlyControls()
@@ -81,17 +67,24 @@ function Header(props) {
             </ul>
           </div>
         )}
-        <button className='flex ml-auto items-center cursor-pointer bg-white border border-gray-300 text-black-700 h-full  mx-6 px-6 py-2 rounded-lg shadow-sm hover:bg-gray-100'
-          onClick={exportPng}
-        >
-          Exportar screenshot
-        </button>
-        <button
-          className={`flex ml-auto items-center cursor-pointer bg-white border border-gray-300 text-black-700 h-full  mx-6 px-6 py-2 rounded-lg shadow-sm hover:bg-gray-100 ${stateControl ? 'bg-blue-500' : 'bg-gray-300'}`}
-          onClick={toggleControlState}
-        >
-          {stateControl ? 'Fly Controls' : 'Orbit Controls'}
-        </button>
+
+
+
+
+        <label className="relative inline-flex items-center ml-auto mr-5 cursor-pointer">
+          <input
+            type="checkbox"
+            className="sr-only peer"
+            checked={stateControl}
+            onChange={toggleControlState}
+            style={{ color: stateControl ? 'purple' : 'inherit' }}
+          />
+          <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+          <span className="text-white ml-2">
+            {stateControl ? 'TrackBall Controls' : 'Orbit Controls'}
+          </span>
+        </label>
+
         <button className='flex ml-auto items-center cursor-pointer bg-white border border-gray-300 text-black-700 h-full  mx-6 px-6 py-2 rounded-lg shadow-sm hover:bg-gray-100'
           onClick={props.reset}
         >

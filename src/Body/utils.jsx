@@ -55,6 +55,7 @@ const toRgb=(arrayColor)=>{
 
   const classificationToColor=(arrayClassification,map)=>{
     let color = [];
+    console.log("map de update",map)
     arrayClassification.forEach(clasificacion => {
       if(clasificacion>17 || clasificacion<0){
         color.push.apply(color,[255,255,255])

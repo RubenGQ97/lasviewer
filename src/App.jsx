@@ -54,7 +54,6 @@ export default function App() {
   const updateClassificationMap = (key, array) => {
     SetClassificationMap(prevMap => {
       const newMap = new Map(prevMap);
-      console.log("el nuevo",newMap)
       newMap.set(key, array);
       return newMap;
     });
@@ -78,7 +77,6 @@ export default function App() {
   }
 
   const handleControlstate=()=>{
-    console.log("SE ACTUALIZA el STATEEEEEEEE",useFlyControls)
     setUseFlyControls(!useFlyControls)
   }
 

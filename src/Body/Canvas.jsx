@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import * as THREE from 'three';
 import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js';
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
 import './styles/canvas.css'
 import { toRgb, classificationToColor } from './utils.jsx'
 let scene, camera, renderer, controls, points, flyControls
@@ -33,7 +33,6 @@ function Canvas(props) {
    */
   const initClassification = (value) => {
     setClassification(value)
-    console.log("EN CANVAS", props.classificationMap)
     setClassificationColor(classificationToColor(value, props.classificationMap))
   }
 
@@ -83,7 +82,7 @@ function Canvas(props) {
    */
   const createControls = () => {
     if (!props.useFlyControls) {
-      console.log("crea orbit")
+
       controls = new OrbitControls(camera, ref.current);
       controls.enableZoom = true; // Habilitar zoom
       controls.enableRotate = true; // Habilitar rotación
@@ -91,13 +90,17 @@ function Canvas(props) {
       controls.zoomSpeed = 1;
       controls.update();
     } else {
-      console.log("crea fly")
-      flyControls = new FlyControls(camera, ref.current);
-      flyControls.movementSpeed = 1;
-      flyControls.rollSpeed = Math.PI / 24;
-      flyControls.autoForward = false;
-      flyControls.dragToLook = true;
+
+      flyControls = new TrackballControls(camera, ref.current);
+      flyControls.enableZoom = true; // Habilitar zoom
+      flyControls.enableRotate = true; // Habilitar rotación
+      flyControls.enablePan = true;
+      flyControls.zoomSpeed = 1;
+      flyControls.rotateSpeed=5
+      flyControls.update();
     }
+
+    
   }
 
 
@@ -114,6 +117,7 @@ function Canvas(props) {
     camera.position.z += distance;
     camera.lookAt(center);
     if(controls)controls.target.copy(center)
+    if(flyControls)flyControls.target.copy(center)
   }
 
 
@@ -123,7 +127,7 @@ function Canvas(props) {
     createCamera()
     createControls()
     createMaterial()
-
+    
     points = new THREE.Points(geometry, material);
 
     //Escalamos
@@ -132,8 +136,7 @@ function Canvas(props) {
     //Ajustamos camara tras escalar
     resetCamera()
 
-    console.log(points)
-    scene.add(points)
+    scene.add(points);
   }
 
 
@@ -144,10 +147,8 @@ function Canvas(props) {
     renderer.setSize(ref.current.clientWidth, ref.current.clientHeight);
     const render = () => {
       requestAnimationFrame(render);
-      console.log("loop",controls)
-      console.log("loop2",flyControls,props.useFlyControls)
       if(controls)controls.update();
-      if(flyControls)flyControls.update(1)
+      if(flyControls)flyControls.update()
 
       renderer.render(scene, camera);
     };
@@ -208,7 +209,6 @@ function Canvas(props) {
   useEffect(() => {
     if (!firstState && scene) {
       initClassification(classification)
-      updatePoints()
     }
   }, [props.classificationMap]);
 
@@ -216,7 +216,7 @@ function Canvas(props) {
 
   useEffect(() => {
     if (!firstState && scene) {
-      console.log("PO SIIIIIIIIIIIII")
+
       if (controls) {
         controls.dispose();
       }
@@ -224,8 +224,9 @@ function Canvas(props) {
       if (flyControls) {
         flyControls.dispose();
       }
-      console.log("crea controles otra vez")
+
       createControls();
+      resetCamera()
     }
 
   }, [props.useFlyControls])
@@ -238,7 +239,7 @@ function Canvas(props) {
       updatePoints()
     }
 
-  }, [props.colorType, props.pointSize])
+  }, [props.colorType, props.pointSize,classificationColor])
 
 
 

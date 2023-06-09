@@ -37,17 +37,9 @@ export default function ColorSection(props) {
 
 
     const handleApplyColors = () => {
+
         colors.forEach((item) => {
             let colorAdded = item.value.replace("#", "");
-            console.log(
-              "Se añade ",
-              parseInt(item.key),
-              [
-                parseInt(colorAdded.substring(0, 2), 16),
-                parseInt(colorAdded.substring(2, 4), 16),
-                parseInt(colorAdded.substring(4, 6), 16),
-              ]
-            );
             props.updateClassificationMap(parseInt(item.key), [
               parseInt(colorAdded.substring(0, 2), 16),
               parseInt(colorAdded.substring(2, 4), 16),
@@ -58,7 +50,7 @@ export default function ColorSection(props) {
 
 
     useEffect(() => {
-        console.log("props.classificationNumber",props.classificationNumber)
+
         if (props.classificationNumber) {
             props.classificationNumber.forEach(classification => {
                 const componentToHex = (c) => {
@@ -69,7 +61,6 @@ export default function ColorSection(props) {
                 const r = componentToHex(array[0]);
                 const g = componentToHex(array[1]);
                 const b = componentToHex(array[2]);
-                console.log("SE INTENTA AÑADIR","classification"+classification+'\n#'+r+g+b)
                 setColors((prevColors) => [
                     ...prevColors,
                     { key: classification, value: "#" + r + g + b },
@@ -80,7 +71,8 @@ export default function ColorSection(props) {
 
 
     return (
-        <div className="bg-blue-900 py-10 p-2 mb-4 h-15">
+        <div className="bg-blue-900  p-2 mb-4 h-15">
+            <h3 className="text-lg font-medium pb-3 text-white">Tipo de color</h3>
             <select
                 className="bg-white text-blue-900 px-4 py-2 rounded-full w-auto"
                 value={selectedOption}
@@ -91,7 +83,7 @@ export default function ColorSection(props) {
             </select>
 
             <div className="mt-4">
-                <h3 className="text-lg font-medium">Colores de Clasificación</h3>
+                <h3 className="text-lg font-medium text-white">Colores de Clasificación</h3>
 
                 {colors.map((item, index) => (
                     <div key={item.key} className="flex items-center mt-2">

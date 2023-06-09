@@ -20,7 +20,8 @@ export function PointSection(props) {
     }
 
     return (
-        <div className="bg-blue-900 py-10 p-2 mb-4 h-15">
+        <div className="bg-blue-900 pb-20 p-2 mb-4 h-15">
+            <h3 className="text-lg font-medium text-white pb-3">Tamaño de puntos</h3>
             <div className="btn-group text-center">
                 <button className={buttonStyle(0.05)} onClick={() => handleSizeChange(0.00001)}>
                     Pequeño
