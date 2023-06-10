@@ -3,11 +3,10 @@ import { useState, useEffect } from 'react';
 
 
 export default function ColorSection(props) {
-    const [selectedOption, setSelectedOption] = useState(0);
     const [colors, setColors] = useState([]);
 
     const handleOptionSelect = (event) => {
-        setSelectedOption(event.target.value);
+        props.setSelectedOption(event.target.value);
         props.changeColorType(event.target.value)
     }
 
@@ -52,6 +51,7 @@ export default function ColorSection(props) {
     useEffect(() => {
 
         if (props.classificationNumber) {
+            setColors([])
             props.classificationNumber.forEach(classification => {
                 const componentToHex = (c) => {
                     const hex = c.toString(16);
@@ -75,7 +75,7 @@ export default function ColorSection(props) {
             <h3 className="text-lg font-medium pb-3 text-white">Tipo de color</h3>
             <select
                 className="bg-white text-blue-900 px-4 py-2 rounded-full w-auto"
-                value={selectedOption}
+                value={props.selectedOption}
                 onChange={handleOptionSelect}
             >
                 <option value="RGB">RGB</option>

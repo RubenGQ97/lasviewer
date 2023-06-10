@@ -18,6 +18,8 @@ function SideBar(props) {
           updateClassificationMap={props.updateClassificationMap}
           classificationNumber={props.classificationNumber}
           classificationMap={props.classificationMap}
+          selectedOption={props.selectedOption}
+          setSelectedOption={props.setSelectedOption}
           ></ColorSection>
         <h2 className="text-2xl font-sans bg-teal-300 mb-4"> Puntos</h2>
           <PointSection pointSize={props.pointSize} handleChangePointSize={props.handleChangePointSize} ></PointSection>

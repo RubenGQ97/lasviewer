@@ -9,6 +9,7 @@ let fileName;
 
 export default function App() {
   const [data, setData] = useState(null)
+  const [selectedOption, setSelectedOption] = useState(0);
   const [colorType, setColorType] = useState('RGB')
   const [loading, setLoading] = useState(false)
   const [speed, setSpeed] = useState(1)
@@ -16,6 +17,7 @@ export default function App() {
   const [resetCamera, setResetCamera] = useState(false)
   const [classificationNumber, setClassificationNumber] = useState(false)
   const [useFlyControls, setUseFlyControls] = useState(false);
+  const [initClassificationList,setinitClassificationList]=  useState()
   const [classificationMap,SetClassificationMap] = useState(new Map([
     [0,[255,255,255]],
     [1,[200,138,37]],
@@ -47,6 +49,7 @@ export default function App() {
     const datos = await load(buffer, LASLoader)
     console.log(datos)
     setData(datos)
+    setinitClassificationList(Array.from(new Set(datos.attributes?.classification.value)))
     setClassificationNumber(Array.from(new Set(datos.attributes?.classification.value)));
   }
 
@@ -65,6 +68,8 @@ export default function App() {
     setColorType('RGB')
     setPointSize(0.01)
     setResetCamera(true)
+    setClassificationNumber(initClassificationList)
+    setSelectedOption(0)
   }
 
 
@@ -112,6 +117,8 @@ export default function App() {
           updateClassificationMap={updateClassificationMap}
           classificationNumber={classificationNumber}
           classificationMap={classificationMap}
+          selectedOption={selectedOption}
+          setSelectedOption={setSelectedOption}
         />
       </div>
 
