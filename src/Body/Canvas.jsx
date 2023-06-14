@@ -12,7 +12,7 @@ function Canvas(props) {
   const ref = useRef(null)
   const [firstState, setFirstState] = useState(true)
   const [color, setColor] = useState(null)
-  const [classificationColor, setClassificationColor] = useState()
+  const [classificationColor, setClassificationColor] = useState(null)
   const [position, setPosition] = useState()
   const [classification, setClassification] = useState()
   const [intensity, setIntensity] = useState()
@@ -41,7 +41,7 @@ function Canvas(props) {
     Crea el material de los puntos según el tipo de colorizacion fijado
   */
   const createMaterial = () => {
-    if (color == null) {
+    if ((props.colorType=='RGB' && color == null) || (props.colorType=='CLASSIFICATION' && classificationColor==null)) {
       material = new THREE.PointsMaterial({ size: props.pointSize, color: 'grey' })
     } else {
       material = new THREE.PointsMaterial({ size: props.pointSize, vertexColors: true });
@@ -84,16 +84,16 @@ function Canvas(props) {
     if (!props.useFlyControls) {
 
       controls = new OrbitControls(camera, ref.current);
-      controls.enableZoom = true; // Habilitar zoom
-      controls.enableRotate = true; // Habilitar rotación
+      controls.enableZoom = true; 
+      controls.enableRotate = true; 
       controls.enablePan = true;
       controls.zoomSpeed = 1;
       controls.update();
     } else {
 
       flyControls = new TrackballControls(camera, ref.current);
-      flyControls.enableZoom = true; // Habilitar zoom
-      flyControls.enableRotate = true; // Habilitar rotación
+      flyControls.enableZoom = true; 
+      flyControls.enableRotate = true; 
       flyControls.enablePan = true;
       flyControls.zoomSpeed = 1;
       flyControls.rotateSpeed=5
@@ -127,15 +127,13 @@ function Canvas(props) {
     createCamera()
     createControls()
     createMaterial()
-    
+  
     points = new THREE.Points(geometry, material);
 
     //Escalamos
     points.scale.set(scaleFactor, scaleFactor, scaleFactor);
-
     //Ajustamos camara tras escalar
     resetCamera()
-
     scene.add(points);
   }
 
