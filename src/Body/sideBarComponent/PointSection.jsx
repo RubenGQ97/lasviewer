@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 
 export function PointSection(props) {
     const [customSize, setCustomSize] = useState()
-
+    
 
     const handleSizeChange = (value) => {
         props.handleChangePointSize(value);
@@ -23,13 +23,13 @@ export function PointSection(props) {
         <div className="bg-blue-900 pb-20 p-2 mb-4 h-15">
             <h3 className="text-lg font-medium text-white pb-3">Tamaño de puntos</h3>
             <div className="btn-group text-center">
-                <button className={buttonStyle(0.05)} onClick={() => handleSizeChange(0.00001)}>
+                <button className={buttonStyle(0.00001)} onClick={() => handleSizeChange(0.00001)}>
                     Pequeño
                 </button>
-                <button className={buttonStyle(0.2)} onClick={() => handleSizeChange(0.01)}>
+                <button className={buttonStyle(0.01)} onClick={() => handleSizeChange(0.01)}>
                     Medio
                 </button>
-                <button className={buttonStyle(1)} onClick={() => handleSizeChange(0.1)}>
+                <button className={buttonStyle(0.1)} onClick={() => handleSizeChange(0.1)}>
                     Grande
                 </button>
 

@@ -30,7 +30,8 @@ function Header(props) {
   const toggleControlState = () => {
     props.setUseFlyControls()
     setStateControl(!stateControl);
-  };
+  }
+  
 
   return (
     <div className='relative'>
