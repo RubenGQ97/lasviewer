@@ -13,9 +13,9 @@ export default function App() {
   const [colorType, setColorType] = useState('RGB')
   const [loading, setLoading] = useState(false)
   const [speed, setSpeed] = useState(1)
-  const [pointSize, setPointSize] = useState(0.01)
+  const [pointSize, setPointSize] = useState(0.001)
   const [resetCamera, setResetCamera] = useState(false)
-  const [classificationNumber, setClassificationNumber] = useState(false)
+  const [classificationNumber, setClassificationNumber] = useState()
   const [useFlyControls, setUseFlyControls] = useState(false);
   const [initClassificationList,setinitClassificationList]=  useState()
   const [classificationMap,SetClassificationMap] = useState(new Map([
